@@ -106,6 +106,11 @@ find_package(Threads REQUIRED)
 #  DEPENDS system_lib
 # )
 
+catkin_package(
+    CATKIN_DEPENDS pigpio
+    DEPENDS pigpio
+)
+
 ###########
 ## Build ##
 ###########
@@ -141,8 +146,6 @@ add_executable(buzz_basic src/buzz.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(buzz_basic
-#   ${catkin_LIBRARIES}
-    ${pigpiod_if2_LIBRARY}
     pigpiod_if2
     ${CMAKE_THREAD_LIBS_INIT}
 )
@@ -195,7 +198,3 @@ target_link_libraries(buzz_basic
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-catkin_package(
-    CATKIN_DEPENDS pigpio
-    DEPENDS pigpio
-)
