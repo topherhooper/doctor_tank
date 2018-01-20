@@ -30,6 +30,8 @@ For more information, please refer to <http://unlicense.org/>
 
 #include <pigpio/pigpio.h>
 
+namespace pigpio {
+
 #define PIGPIOD_IF_VERSION 27
 
 /*TEXT
@@ -2964,6 +2966,8 @@ typedef enum
 } pigifError_t;
 
 /*DEF_E*/
+
+} // namespace pigpio
 
 #ifdef __cplusplus
 }

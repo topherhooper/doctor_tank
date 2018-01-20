@@ -1,5 +1,13 @@
 # Pigpio
 
+## Callback function signature:
+
+Unfortunately, porting `pigpio` to C++ required making some changes to how callbacks are constructed. If you are creating a callback, it must use the following signature, no matter what:
+
+```c++
+void (*callback) (int, int, uint32_t, void*)
+```
+
 ## Installing `pigpio`
 
 The following downloads the [`pigpio`](http://abyz.me.uk/rpi/pigpio/) source and installs it to the system. It also copies header files to `include/pigpio`. This allows use of the [`pigpiod` C interface](http://abyz.me.uk/rpi/pigpio/pdif2.html) (_not_ the standard `pigpio` C interface).

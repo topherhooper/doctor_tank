@@ -51,6 +51,8 @@ This version is for pigpio version 57+
 #define CMD_VAR     2
 #define CMD_PAR     3
 
+namespace pigpio {
+
 typedef struct
 {
    uint32_t cmd;
@@ -117,6 +119,8 @@ int cmdParseScript(char *script, cmdScript_t *s, int diags);
 char const *cmdErrStr(int error);
 
 char const *cmdStr(void);
+
+} // namespace pigpio
 
 #endif
 

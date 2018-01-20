@@ -29,6 +29,8 @@
 
 #define STACK_SIZE (256*1024)
 
+namespace pigpio {
+
 typedef void (*CBF_t) ();
 
 struct callback_s
@@ -1542,4 +1544,4 @@ int wait_for_edge(unsigned user_gpio, unsigned edge, double timeout)
    return triggered;
 }
 
-
+} // namespace pigpio

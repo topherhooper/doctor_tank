@@ -11,6 +11,8 @@ This version is for pigpio version 57+
 #include <pigpio/pigpio.h>
 #include <pigpio/command.h>
 
+namespace pigpio {
+
 cmdInfo_t cmdInfo[]=
 {
    /* num          str    vfyt retv */
@@ -1376,3 +1378,4 @@ int cmdParseScript(char *script, cmdScript_t *s, int diags)
    return status;
 }
 
+} // namespace pigpio

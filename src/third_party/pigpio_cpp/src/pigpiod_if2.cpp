@@ -31,7 +31,9 @@
 
 #define MAX_PI 32
 
-typedef void (*CBF_t) ();
+namespace pigpio {
+
+typedef void (*CBF_t) (int, unsigned, unsigned, uint32_t, void*);
 
 struct callback_s
 {
@@ -293,7 +295,7 @@ static void dispatch_notification(int pi, gpioReport_t *r)
             if ((p->edge) ^ l)
             {
                if (p->ex) (p->f)(pi, p->gpio, l, r->tick, p->user);
-               else       (p->f)(pi, p->gpio, l, r->tick);
+               else       (p->f)(pi, p->gpio, l, r->tick, nullptr);
             }
          }
          p = p->next;
@@ -312,7 +314,7 @@ static void dispatch_notification(int pi, gpioReport_t *r)
             if (((p->pi) == pi) && ((p->gpio) == g))
             {
                if (p->ex) (p->f)(pi, g, PI_TIMEOUT, r->tick, p->user);
-               else       (p->f)(pi, g, PI_TIMEOUT, r->tick);
+               else       (p->f)(pi, g, PI_TIMEOUT, r->tick, nullptr);
             }
             p = p->next;
          }
@@ -327,8 +329,8 @@ static void dispatch_notification(int pi, gpioReport_t *r)
          {
             if (((ep->pi) == pi) && ((ep->event) == g))
             {
-               if (ep->ex) (ep->f)(pi, g, r->tick, ep->user);
-               else        (ep->f)(pi, g, r->tick);
+               if (ep->ex) (ep->f)(pi, g, 0, r->tick, ep->user);
+               else        (ep->f)(pi, g, 0, r->tick, nullptr);
             }
             ep = ep->next;
          }
@@ -478,7 +480,7 @@ static void findEventBits(int pi)
 }
 
 static void _ewfe(
-   int pi, unsigned event, uint32_t tick, void *user)
+   int pi, unsigned event, unsigned level, uint32_t tick, void *user)
 {
    *(int *)user = 1;
 }
@@ -2084,3 +2086,4 @@ int wait_for_event(int pi, unsigned event, double timeout)
 int event_trigger(int pi, unsigned event)
    {return pigpio_command(pi, PI_CMD_EVM, event, 0, 1);}
 
+} // namespace pigpio

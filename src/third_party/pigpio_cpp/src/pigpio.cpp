@@ -40,6 +40,7 @@
 
 #include <pigpio/command.h>
 
+namespace pigpio {
 
 /* --------------------------------------------------------------- */
 
@@ -849,7 +850,7 @@ Assumes two counters per block.  Each counter 4 * 16 (16^4=65536)
 
 /* typedef ------------------------------------------------------- */
 
-typedef void (*callbk_t) ();
+typedef void (*callbk_t) (int, int, uint32_t, void*);
 
 typedef struct
 {
@@ -3159,7 +3160,7 @@ static void waveRxSerial(wfRx_t *w, int level, uint32_t tick)
 
 /* ----------------------------------------------------------------------- */
 
-static void waveRxBit(int gpio, int level, uint32_t tick)
+static void waveRxBit(int gpio, int level, uint32_t tick, void* unused)
 {
    switch (wfRx[gpio].mode)
    {
@@ -5445,11 +5446,11 @@ static void sigHandler(int signum)
       {
          if (gpioSignal[signum].ex)
          {
-            (gpioSignal[signum].func)(signum, gpioSignal[signum].userdata);
+            (gpioSignal[signum].func)(signum, 0, 0, gpioSignal[signum].userdata);
          }
          else
          {
-            (gpioSignal[signum].func)(signum);
+            (gpioSignal[signum].func)(signum, 0, 0, nullptr);
          }
       }
       else
@@ -5685,11 +5686,11 @@ static void alertEmit(
          if (gpioGetSamples.ex)
          {
             (gpioGetSamples.func)
-               (sample, numSamples, gpioGetSamples.userdata);
+               (sample->level, sample->tick, numSamples, gpioGetSamples.userdata);
          }
          else
          {
-            (gpioGetSamples.func)(sample, numSamples);
+            (gpioGetSamples.func)(sample->level, sample->tick, numSamples, nullptr);
          }
       }
    }
@@ -5712,11 +5713,11 @@ static void alertEmit(
          {
             if (eventAlert[b].ex)
             {
-               (eventAlert[b].func)(b, eTick, eventAlert[b].userdata);
+               (eventAlert[b].func)(b, 0, eTick, eventAlert[b].userdata);
             }
             else
             {
-               (eventAlert[b].func)(b, eTick);
+               (eventAlert[b].func)(b, 0, eTick, nullptr);
             }
          }
       }
@@ -5749,12 +5750,11 @@ static void alertEmit(
                      if (gpioAlert[b].ex)
                      {
                         (gpioAlert[b].func)
-                           (b, v, sample[d].tick,
-                            gpioAlert[b].userdata);
+                           (b, v, sample[d].tick, gpioAlert[b].userdata);
                      }
                      else
                      {
-                        (gpioAlert[b].func)(b, v, sample[d].tick);
+                        (gpioAlert[b].func)(b, v, sample[d].tick, nullptr);
                      }
                   }
                }
@@ -5786,12 +5786,11 @@ static void alertEmit(
                {
                   if (gpioAlert[b].ex)
                   {
-                     (gpioAlert[b].func)(b, PI_TIMEOUT, eTick,
-                                            gpioAlert[b].userdata);
+                     (gpioAlert[b].func)(b, PI_TIMEOUT, eTick, gpioAlert[b].userdata);
                   }
                   else
                   {
-                     (gpioAlert[b].func)(b, PI_TIMEOUT, eTick);
+                     (gpioAlert[b].func)(b, PI_TIMEOUT, eTick, nullptr);
                   }
                }
             }
@@ -6740,8 +6739,8 @@ static void * pthTimerTick(void *x)
          }
       }
 
-      if (tp->ex) (tp->func)(tp->userdata);
-      else        (tp->func)();
+      if (tp->ex) (tp->func)(0, 0, 0, tp->userdata);
+      else        (tp->func)(0, 0, 0, nullptr);
    }
 
    return 0;
@@ -11341,7 +11340,7 @@ static void *pthISRThread(void *x)
          else level = PI_TIMEOUT;
 
          if (isr->ex) (isr->func)(isr->gpio, level, tick, isr->userdata);
-         else         (isr->func)(isr->gpio, level, tick);
+         else         (isr->func)(isr->gpio, level, tick, nullptr);
       }
    }
 
@@ -13474,3 +13473,4 @@ int gpioCfgInternals(unsigned cfgWhat, unsigned cfgVal)
    return retVal;
 }
 
+} // namespace pigpio

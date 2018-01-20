@@ -15,23 +15,22 @@ catkin_package(
 include_directories(include)
 
 # libpigpio.so
-# set(PIGPIOD_IF2_SOURCES
-#     src/pigpiod_if2.cpp)
-# add_library(pigpiod_if2 ${PIGPIOD_IF2_SOURCES})
-
-# libpigpiod_if2.so
-# set(PIGPIOD_IF_SOURCES
-#     src/pigpiod_if.cpp)
-# add_library(pigpiod_if ${PIGPIOD_IF_SOURCES})
+set(PIGPIO_SOURCES
+    src/command.cpp
+    src/pigpio.cpp)
+add_library(pigpio ${PIGPIO_SOURCES})
+target_link_libraries(pigpio
+    ${CMAKE_THREAD_LIBS_INIT}
+    rt)
 
 # libpigpiod_if2.so
 set(PIGPIOD_IF2_SOURCES
-    src/pigpio.cpp
     src/command.cpp
     src/pigpiod_if2.cpp)
 add_library(pigpiod_if2 ${PIGPIOD_IF2_SOURCES})
 target_link_libraries(pigpiod_if2
-    ${CMAKE_THREAD_LIBS_INIT})
+    ${CMAKE_THREAD_LIBS_INIT}
+    rt)
 
 ## Mark cpp header files for installation
 install(DIRECTORY include/${PROJECT_NAME}/

@@ -33,6 +33,8 @@ For more information, please refer to <http://unlicense.org/>
 
 #define PIGPIO_VERSION 64
 
+namespace pigpio {
+
 /*TEXT
 
 pigpio is a C library for the Raspberry which allows control of the GPIO.
@@ -509,7 +511,8 @@ typedef struct
 
 typedef void (*gpioAlertFunc_t)    (int      gpio,
                                     int      level,
-                                    uint32_t tick);
+                                    uint32_t tick,
+                                    void* unused);
 
 typedef void (*gpioAlertFuncEx_t)  (int      gpio,
                                     int      level,
@@ -517,36 +520,61 @@ typedef void (*gpioAlertFuncEx_t)  (int      gpio,
                                     void    *userdata);
 
 typedef void (*eventFunc_t)        (int      event,
-                                    uint32_t tick);
+                                    int level,
+                                    uint32_t tick,
+                                    void *unused);
 
 typedef void (*eventFuncEx_t)      (int      event,
+                                    int level,
                                     uint32_t tick,
                                     void    *userdata);
 
 typedef void (*gpioISRFunc_t)      (int      gpio,
                                     int      level,
-                                    uint32_t tick);
+                                    uint32_t tick,
+                                    void* unused);
 
 typedef void (*gpioISRFuncEx_t)    (int      gpio,
                                     int      level,
                                     uint32_t tick,
                                     void    *userdata);
 
-typedef void (*gpioTimerFunc_t)    (void);
+typedef void (*gpioTimerFunc_t)    (int gpio,
+                                    int level,
+                                    uint32_t tick,
+                                    void* unused);
 
-typedef void (*gpioTimerFuncEx_t)  (void *userdata);
+typedef void (*gpioTimerFuncEx_t)    (int gpio,
+                                    int level,
+                                    uint32_t tick,
+                                    void* userdata);
 
-typedef void (*gpioSignalFunc_t)   (int signum);
+typedef void (*gpioSignalFunc_t)   (int signum,
+                                    int level,
+                                    uint32_t tick,
+                                    void *unused);
 
 typedef void (*gpioSignalFuncEx_t) (int    signum,
+                                    int level,
+                                    uint32_t tick,
                                     void  *userdata);
 
-typedef void (*gpioGetSamplesFunc_t)   (const gpioSample_t *samples,
-                                        int                 numSamples);
+// gpioSample_t just has tick and level uint32_t
+// typedef void (*gpioGetSamplesFunc_t)   (const gpioSample_t *samples,
+//                                        int                 numSamples);
+typedef void (*gpioGetSamplesFunc_t)   (int level,
+                                        int tick,
+                                        int numSamples,
+                                        void* unused);
 
-typedef void (*gpioGetSamplesFuncEx_t) (const gpioSample_t *samples,
-                                        int                 numSamples,
-                                        void               *userdata);
+// typedef void (*gpioGetSamplesFuncEx_t) (const gpioSample_t *samples,
+//                                         int                 numSamples,
+//                                         void               *userdata);
+
+typedef void (*gpioGetSamplesFuncEx_t)   (int level,
+                                          int tick,
+                                          int numSamples,
+                                          void* userdata);
 
 typedef void *(gpioThreadFunc_t) (void *);
 
@@ -6351,6 +6379,8 @@ after this command is issued.
 #define PI_DEFAULT_CFG_INTERNALS           0
 
 /*DEF_E*/
+
+} // namespace pigpio
 
 #endif
 
