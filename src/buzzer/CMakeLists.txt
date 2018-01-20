@@ -23,5 +23,7 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 add_executable(buzz_basic src/buzz.cpp)
 target_link_libraries(buzz_basic
     pigpiod_if2
+    ${catkin_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
+    rt
 )
