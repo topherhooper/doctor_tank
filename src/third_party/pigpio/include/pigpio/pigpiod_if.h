@@ -2967,11 +2967,11 @@ typedef enum
 
 /*DEF_E*/
 
-} // namespace pigpio
-
 #ifdef __cplusplus
 }
 #endif
+
+} // namespace pigpio
 
 #endif
 
