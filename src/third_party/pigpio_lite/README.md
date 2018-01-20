@@ -9,22 +9,22 @@ $ make
 $ sudo make install
 ```
 
-## Using `pigpio` in a C++ ROS package
+## Using `pigpio_lite` in a C++ ROS package
 
 1. Add the following to your `package.xml`
 
 ```xml
-<depend>pigpio</depend>
+<depend>pigpio_lite</depend>
 ```
 
 2. Add the following to your `CMakeLists.txt`
 
 ```cmake
-find_package(catkin REQUIRED COMPONENTS pigpio)
+find_package(catkin REQUIRED COMPONENTS pigpio_lite)
 find_package(Threads REQUIRED)
 
 catkin_package(
-    CATKIN_DEPENDS pigpio
+    CATKIN_DEPENDS pigpio_lite
     DEPENDS pigpio
 )
 
@@ -37,10 +37,10 @@ target_link_libraries(target
 )
 ```
 
-3. Import `<pigpio/pigpiod_if2.h>` in C++ files that use `pigpio`
+3. Import `<pigpio_lite/pigpiod_if2.h>` in C++ files that use `pigpio`
 
 ```c++
-#include <pigpio/pigpiod_if2.h>
+#include <pigpio_lite/pigpiod_if2.h>
 
 ...
 
