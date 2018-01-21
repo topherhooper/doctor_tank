@@ -6363,6 +6363,7 @@ after this command is issued.
 #define PI_DEFAULT_DMA_CHANNEL             14
 #define PI_DEFAULT_DMA_PRIMARY_CHANNEL     14
 #define PI_DEFAULT_DMA_SECONDARY_CHANNEL   6
+#define PI_DEFAULT_ADDR_STR                "localhost"
 #define PI_DEFAULT_SOCKET_PORT             8888
 #define PI_DEFAULT_SOCKET_PORT_STR         "8888"
 #define PI_DEFAULT_SOCKET_ADDR_STR         "127.0.0.1"

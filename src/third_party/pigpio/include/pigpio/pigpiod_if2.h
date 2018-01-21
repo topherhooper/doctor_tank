@@ -371,7 +371,9 @@ The thread to be stopped should have been started with [*start_thread*].
 D*/
 
 /*F*/
-int pigpio_start(char *addrStr, char *portStr);
+int pigpio_start(
+        const std::string& addrStr = PI_DEFAULT_ADDR_STR, 
+        const std::string& portStr = PI_DEFAULT_SOCKET_PORT_STR);
 /*D
 Connect to the pigpio daemon.  Reserving command and
 notification streams.

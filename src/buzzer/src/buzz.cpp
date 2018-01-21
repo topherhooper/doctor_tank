@@ -39,7 +39,7 @@ int createSquareWave(int pi, std::vector<pigpio::gpioPulse_t>& pulses) {
 int main(int argc, char** argv) {
     // Initialize
     constexpr int GPIO = 19;
-    int pi = pigpio::pigpio_start(nullptr, nullptr);
+    int pi = pigpio::pigpio_start();
     if (pigpio::set_mode(pi, GPIO, PI_OUTPUT)) {
         return 1;
     }

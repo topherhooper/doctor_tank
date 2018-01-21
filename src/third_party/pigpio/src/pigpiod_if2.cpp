@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <string>
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
@@ -209,33 +210,35 @@ static int pigpio_command_ext
    return cmd.res;
 }
 
-static int pigpioOpenSocket(char *addr, char *port)
+static int pigpioOpenSocket(const std::string& addr, const std::string& port)
 {
    int sock, err, opt;
    struct addrinfo hints, *res, *rp;
-   const char *addrStr, *portStr;
+   const std::string addrStr, *portStr;
 
-   if (!addr)
-   {
-      addrStr = getenv(PI_ENVADDR);
+   //if (!addr)
+   //{
+      //addrStr = getenv(PI_ENVADDR);
 
-      if ((!addrStr) || (!strlen(addrStr)))
-      {
-         addrStr = PI_DEFAULT_SOCKET_ADDR_STR;
-      }
-   }
-   else addrStr = addr;
+      //if ((!addrStr) || (!strlen(addrStr)))
+      //{
+         //addrStr = PI_DEFAULT_SOCKET_ADDR_STR;
+      //}
+   //}
+   //else {
+       //addrStr = addr;
+   //}
 
-   if (!port)
-   {
-      portStr = getenv(PI_ENVPORT);
+   //if (!port)
+   //{
+      //portStr = getenv(PI_ENVPORT);
 
-      if ((!portStr) || (!strlen(portStr)))
-      {
-         portStr = PI_DEFAULT_SOCKET_PORT_STR;
-      }
-   }
-   else portStr = port;
+      //if ((!portStr) || (!strlen(portStr)))
+      //{
+         //portStr = PI_DEFAULT_SOCKET_PORT_STR;
+      //}
+   //}
+   //else portStr = port;
 
    memset (&hints, 0, sizeof (hints));
 
@@ -243,7 +246,7 @@ static int pigpioOpenSocket(char *addr, char *port)
    hints.ai_socktype = SOCK_STREAM;
    hints.ai_flags   |= AI_CANONNAME;
 
-   err = getaddrinfo (addrStr, portStr, &hints, &res);
+   err = getaddrinfo (addr.c_str(), port.c_str(), &hints, &res);
 
    if (err) return pigif_bad_getaddrinfo;
 
@@ -683,16 +686,16 @@ void stop_thread(pthread_t *pth)
    }
 }
 
-int pigpio_start(char *addrStr, char *portStr)
+int pigpio_start(const std::string& addrStr, const std::string& portStr)
 {
    int pi;
    int *userdata;
 
-   if ((!addrStr) || (strlen(addrStr) == 0))
-   {
-       char lhost[] = "localhost";
-       memcpy(addrStr, lhost, strlen(lhost)+1);
-   }
+   //if ((!addrStr) || (strlen(addrStr) == 0))
+   //{
+       //char const* lhost = "localhost";
+       //strcpy(addrStr, lhost);
+   //}
 
    for (pi=0; pi<MAX_PI; pi++)
    {
