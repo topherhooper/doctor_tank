@@ -32,6 +32,13 @@ target_link_libraries(pigpiod_if2
     ${CMAKE_THREAD_LIBS_INIT}
     rt)
 
+# pigpiod executable
+add_executable(pigpiod src/pigpiod.cpp)
+target_link_libraries(pigpiod
+    pigpio
+    ${CMAKE_THREAD_LIBS_INIT}
+    rt)
+
 ## Mark cpp header files for installation
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}

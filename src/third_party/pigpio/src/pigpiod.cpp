@@ -24,6 +24,8 @@ This version is for pigpio version 58+
 This program starts the pigpio library as a daemon.
 */
 
+namespace pigpio {
+
 static unsigned bufferSizeMilliseconds = PI_DEFAULT_BUFFER_MILLIS;
 static unsigned clockMicros            = PI_DEFAULT_CLK_MICROS;
 static unsigned clockPeripheral        = PI_DEFAULT_CLK_PERIPHERAL;
@@ -45,7 +47,7 @@ static uint32_t sockNetAddr[MAX_CONNECT_ADDRESSES];
 
 static int numSockNetAddr = 0;
 
-void fatal(char *fmt, ...)
+void fatal(char const* fmt, ...)
 {
    char buf[128];
    va_list ap;
@@ -254,7 +256,7 @@ static void initOpts(int argc, char *argv[])
     }
 }
 
-void terminate(int signum)
+void terminate(int signum, int level, uint32_t tick, void* unused)
 {
    /* only registered for SIGHUP/SIGTERM */
 
@@ -271,6 +273,7 @@ void terminate(int signum)
    exit(0);
 }
 
+} //namespace pigpio
 
 int main(int argc, char **argv)
 {
@@ -279,9 +282,9 @@ int main(int argc, char **argv)
 
    /* check command line parameters */
 
-   initOpts(argc, argv);
+   pigpio::initOpts(argc, argv);
 
-   if (!foreground) {
+   if (!pigpio::foreground) {
       /* Fork off the parent process */
 
       pid = fork();
@@ -302,11 +305,11 @@ int main(int argc, char **argv)
 
       /* Create a new SID for the child process */
 
-      if (setsid() < 0) fatal("setsid failed (%m)");
+      if (setsid() < 0) pigpio::fatal("setsid failed (%m)");
 
       /* Change the current working directory */
 
-      if ((chdir("/")) < 0) fatal("chdir failed (%m)");
+      if ((chdir("/")) < 0) pigpio::fatal("chdir failed (%m)");
 
       /* Close out the standard file descriptors */
 
@@ -316,27 +319,27 @@ int main(int argc, char **argv)
 
    /* configure library */
 
-   gpioCfgBufferSize(bufferSizeMilliseconds);
+   pigpio::gpioCfgBufferSize(pigpio::bufferSizeMilliseconds);
 
-   gpioCfgClock(clockMicros, clockPeripheral, 0);
+   pigpio::gpioCfgClock(pigpio::clockMicros, pigpio::clockPeripheral, 0);
 
-   gpioCfgInterfaces(ifFlags);
+   pigpio::gpioCfgInterfaces(pigpio::ifFlags);
 
-   gpioCfgDMAchannels(DMAprimaryChannel, DMAsecondaryChannel);
+   pigpio::gpioCfgDMAchannels(pigpio::DMAprimaryChannel, pigpio::DMAsecondaryChannel);
 
-   gpioCfgSocketPort(socketPort);
+   pigpio::gpioCfgSocketPort(pigpio::socketPort);
 
-   gpioCfgMemAlloc(memAllocMode);
+   pigpio::gpioCfgMemAlloc(pigpio::memAllocMode);
 
-   if (updateMaskSet) gpioCfgPermissions(updateMask);
+   if (pigpio::updateMaskSet) pigpio::gpioCfgPermissions(pigpio::updateMask);
 
-   gpioCfgNetAddr(numSockNetAddr, sockNetAddr);
+   pigpio::gpioCfgNetAddr(pigpio::numSockNetAddr, pigpio::sockNetAddr);
 
-   gpioCfgSetInternals(cfgInternals);
+   pigpio::gpioCfgSetInternals(pigpio::cfgInternals);
 
    /* start library */
 
-   if (gpioInitialise()< 0) fatal("Can't initialise pigpio library");
+   if (pigpio::gpioInitialise()< 0) pigpio::fatal("Can't initialise pigpio library");
 
    /* create pipe for error reporting */
 
@@ -345,21 +348,21 @@ int main(int argc, char **argv)
    mkfifo(PI_ERRFIFO, 0664);
 
    if (chmod(PI_ERRFIFO, 0664) < 0)
-      fatal("chmod %s failed (%m)", PI_ERRFIFO);
+      pigpio::fatal("chmod %s failed (%m)", PI_ERRFIFO);
 
-   errFifo = freopen(PI_ERRFIFO, "w+", stderr);
+   pigpio::errFifo = freopen(PI_ERRFIFO, "w+", stderr);
 
-   if (errFifo)
+   if (pigpio::errFifo)
    {
       /* set stderr non-blocking */
 
-      flags = fcntl(fileno(errFifo), F_GETFL, 0);
-      fcntl(fileno(errFifo), F_SETFL, flags | O_NONBLOCK);
+      flags = fcntl(fileno(pigpio::errFifo), F_GETFL, 0);
+      fcntl(fileno(pigpio::errFifo), F_SETFL, flags | O_NONBLOCK);
 
       /* request SIGHUP/SIGTERM from libarary for termination */
 
-      gpioSetSignalFunc(SIGHUP, terminate);
-      gpioSetSignalFunc(SIGTERM, terminate);
+      pigpio::gpioSetSignalFunc(SIGHUP, pigpio::terminate);
+      pigpio::gpioSetSignalFunc(SIGTERM, pigpio::terminate);
 
       /* sleep forever */
 
@@ -369,17 +372,16 @@ int main(int argc, char **argv)
 
          sleep(5);
 
-         fflush(errFifo);
+         fflush(pigpio::errFifo);
       }
    }
    else
    {
       fprintf(stderr, "freopen failed (%m)");
 
-      gpioTerminate();
+      pigpio::gpioTerminate();
    }
 
    return 0;
 }
-
 
