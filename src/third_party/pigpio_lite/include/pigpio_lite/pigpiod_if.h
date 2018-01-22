@@ -28,9 +28,7 @@ For more information, please refer to <http://unlicense.org/>
 #ifndef PIGPIOD_IF_H
 #define PIGPIOD_IF_H
 
-#include <pigpio/pigpio.h>
-
-namespace pigpio {
+#include "pigpio.h"
 
 #define PIGPIOD_IF_VERSION 27
 
@@ -2970,8 +2968,6 @@ typedef enum
 #ifdef __cplusplus
 }
 #endif
-
-} // namespace pigpio
 
 #endif
 

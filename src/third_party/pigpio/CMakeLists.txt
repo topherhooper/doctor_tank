@@ -5,6 +5,7 @@ project(pigpio)
 add_definitions(-std=c++11)
 
 find_package(catkin REQUIRED)
+find_package(Threads REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
@@ -13,10 +14,36 @@ catkin_package(
 # Directories needed to install pigpio
 include_directories(include)
 
+# libpigpio.so
+set(PIGPIO_SOURCES
+    src/command.cpp
+    src/pigpio.cpp)
+add_library(pigpio ${PIGPIO_SOURCES})
+target_link_libraries(pigpio
+    ${CMAKE_THREAD_LIBS_INIT}
+    rt)
+
+# libpigpiod_if2.so
+set(PIGPIOD_IF2_SOURCES
+    src/command.cpp
+    src/pigpiod_if2.cpp)
+add_library(pigpiod_if2 ${PIGPIOD_IF2_SOURCES})
+target_link_libraries(pigpiod_if2
+    ${CMAKE_THREAD_LIBS_INIT}
+    rt)
+
+# pigpiod executable
+add_executable(pigpiod src/pigpiod.cpp)
+target_link_libraries(pigpiod
+    pigpio
+    ${CMAKE_THREAD_LIBS_INIT}
+    rt)
+
 ## Mark cpp header files for installation
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.h"
   PATTERN ".svn" EXCLUDE
 )
+
 

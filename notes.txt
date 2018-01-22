@@ -1,0 +1,11 @@
+# Build with debug:
+
+```
+catkin_make -DCMAKE_BUILD_TYPE=Debug
+```
+
+Run GDB
+
+```
+rosrun --prefix 'gdb' <package> <executable>
+```

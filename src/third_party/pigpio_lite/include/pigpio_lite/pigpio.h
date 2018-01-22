@@ -33,8 +33,6 @@ For more information, please refer to <http://unlicense.org/>
 
 #define PIGPIO_VERSION 64
 
-namespace pigpio {
-
 /*TEXT
 
 pigpio is a C library for the Raspberry which allows control of the GPIO.
@@ -511,8 +509,7 @@ typedef struct
 
 typedef void (*gpioAlertFunc_t)    (int      gpio,
                                     int      level,
-                                    uint32_t tick,
-                                    void* unused);
+                                    uint32_t tick);
 
 typedef void (*gpioAlertFuncEx_t)  (int      gpio,
                                     int      level,
@@ -520,61 +517,36 @@ typedef void (*gpioAlertFuncEx_t)  (int      gpio,
                                     void    *userdata);
 
 typedef void (*eventFunc_t)        (int      event,
-                                    int level,
-                                    uint32_t tick,
-                                    void *unused);
+                                    uint32_t tick);
 
 typedef void (*eventFuncEx_t)      (int      event,
-                                    int level,
                                     uint32_t tick,
                                     void    *userdata);
 
 typedef void (*gpioISRFunc_t)      (int      gpio,
                                     int      level,
-                                    uint32_t tick,
-                                    void* unused);
+                                    uint32_t tick);
 
 typedef void (*gpioISRFuncEx_t)    (int      gpio,
                                     int      level,
                                     uint32_t tick,
                                     void    *userdata);
 
-typedef void (*gpioTimerFunc_t)    (int gpio,
-                                    int level,
-                                    uint32_t tick,
-                                    void* unused);
+typedef void (*gpioTimerFunc_t)    (void);
 
-typedef void (*gpioTimerFuncEx_t)    (int gpio,
-                                    int level,
-                                    uint32_t tick,
-                                    void* userdata);
+typedef void (*gpioTimerFuncEx_t)  (void *userdata);
 
-typedef void (*gpioSignalFunc_t)   (int signum,
-                                    int level,
-                                    uint32_t tick,
-                                    void *unused);
+typedef void (*gpioSignalFunc_t)   (int signum);
 
 typedef void (*gpioSignalFuncEx_t) (int    signum,
-                                    int level,
-                                    uint32_t tick,
                                     void  *userdata);
 
-// gpioSample_t just has tick and level uint32_t
-// typedef void (*gpioGetSamplesFunc_t)   (const gpioSample_t *samples,
-//                                        int                 numSamples);
-typedef void (*gpioGetSamplesFunc_t)   (int level,
-                                        int tick,
-                                        int numSamples,
-                                        void* unused);
+typedef void (*gpioGetSamplesFunc_t)   (const gpioSample_t *samples,
+                                        int                 numSamples);
 
-// typedef void (*gpioGetSamplesFuncEx_t) (const gpioSample_t *samples,
-//                                         int                 numSamples,
-//                                         void               *userdata);
-
-typedef void (*gpioGetSamplesFuncEx_t)   (int level,
-                                          int tick,
-                                          int numSamples,
-                                          void* userdata);
+typedef void (*gpioGetSamplesFuncEx_t) (const gpioSample_t *samples,
+                                        int                 numSamples,
+                                        void               *userdata);
 
 typedef void *(gpioThreadFunc_t) (void *);
 
@@ -3066,7 +3038,7 @@ PI_BAD_USER_GPIO, PI_NOT_SPI_GPIO or PI_BAD_POINTER.
 
 #include <stdio.h>
 
-#include <pigpio/pigpio.h>
+#include "pigpio.h"
 
 #define CE0 5
 #define CE1 6
@@ -6363,7 +6335,6 @@ after this command is issued.
 #define PI_DEFAULT_DMA_CHANNEL             14
 #define PI_DEFAULT_DMA_PRIMARY_CHANNEL     14
 #define PI_DEFAULT_DMA_SECONDARY_CHANNEL   6
-#define PI_DEFAULT_ADDR_STR                "localhost"
 #define PI_DEFAULT_SOCKET_PORT             8888
 #define PI_DEFAULT_SOCKET_PORT_STR         "8888"
 #define PI_DEFAULT_SOCKET_ADDR_STR         "127.0.0.1"
@@ -6380,8 +6351,6 @@ after this command is issued.
 #define PI_DEFAULT_CFG_INTERNALS           0
 
 /*DEF_E*/
-
-} // namespace pigpio
 
 #endif
 

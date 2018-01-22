@@ -1,6 +1,6 @@
-all: pigpio
+all: pigpio_lite
 
-pigpio: download copy_include
+pigpio_lite: download copy_include
 	cd src && $(MAKE)
 
 download:
@@ -10,8 +10,8 @@ download:
 	rm -f master.zip
 
 copy_include:
-	mkdir -p include/pigpio
-	cp src/*.h include/pigpio
+	mkdir -p include/pigpio_lite
+	cp src/*.h include/pigpio_lite
 
 install:
 	cd src && make install

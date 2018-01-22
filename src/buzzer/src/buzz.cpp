@@ -15,11 +15,11 @@ static constexpr float F_HI = 349.23;
 
 static constexpr uint32_t MICROS_PER_SECOND = 1000000;
 
-std::vector<gpioPulse_t> createSquarePulse(float hz, uint32_t gpio) {
+std::vector<pigpio::gpioPulse_t> createSquarePulse(float hz, uint32_t gpio) {
     // Create pulses vector
     float period = MICROS_PER_SECOND / hz;
     float halfPeriod = period / 2;
-    std::vector<gpioPulse_t> pulses(2);
+    std::vector<pigpio::gpioPulse_t> pulses(2);
     pulses[0].gpioOn = 1 << gpio;
     pulses[0].gpioOff = 0;
     pulses[0].usDelay = halfPeriod;
@@ -28,19 +28,19 @@ std::vector<gpioPulse_t> createSquarePulse(float hz, uint32_t gpio) {
     pulses[1].usDelay = halfPeriod;
     return pulses;
     
-    gpioPulse_t* pPulse = &pulses[0];
+    pigpio::gpioPulse_t* pPulse = &pulses[0];
 }
 
-int createSquareWave(int pi, std::vector<gpioPulse_t>& pulses) {
-    wave_add_generic(pi, pulses.size(), &pulses[0]);
-    return wave_create(pi);
+int createSquareWave(int pi, std::vector<pigpio::gpioPulse_t>& pulses) {
+    pigpio::wave_add_generic(pi, pulses.size(), &pulses[0]);
+    return pigpio::wave_create(pi);
 }
 
 int main(int argc, char** argv) {
     // Initialize
     constexpr int GPIO = 19;
-    int pi = pigpio_start(nullptr, nullptr);
-    if (set_mode(pi, GPIO, PI_OUTPUT)) {
+    int pi = pigpio::pigpio_start();
+    if (pigpio::set_mode(pi, GPIO, PI_OUTPUT)) {
         return 1;
     }
     
@@ -80,10 +80,10 @@ int main(int argc, char** argv) {
             waveFHI};
 
     for (const auto& note : scale) {
-        wave_send_repeat(pi, note);
+        pigpio::wave_send_repeat(pi, note);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    wave_tx_stop(pi);
-    wave_clear(pi);
+    pigpio::wave_tx_stop(pi);
+    pigpio::wave_clear(pi);
 }
