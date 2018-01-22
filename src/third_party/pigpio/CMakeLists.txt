@@ -46,4 +46,6 @@ install(DIRECTORY include/${PROJECT_NAME}/
   PATTERN ".svn" EXCLUDE
 )
 
+# Add pipgio python package
+catkin_python_setup()
 
